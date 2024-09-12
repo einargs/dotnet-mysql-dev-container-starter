@@ -1,0 +1,50 @@
+version: '3.8'
+
+
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    # mounts the workspace folder from the local source tree into the Dev Container.
+    volumes:
+      - ../..:/workspaces:cached
+      
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+  db:
+    image: mysql:8
+    restart: always
+    # See this for documentation: https://docs.docker.com/compose/networking/
+    # Within this development environment, 3306 is visible -- so from the app
+    # container that runs C# app, we use mysql://db:3306 to connect. But externally
+    # from the host the port is exposed on 3000.
+    ports:
+      - "3000:3306"
+    volumes:
+      # This tells docker to use it's built-in volume capabilities to create a volume
+      # (a persistent place to store files that isn't just a host directory or something
+      # that will go away when the container is deleted) and mount it at the given path
+      # where mysql can store it's data.
+      #
+      # NOTE: Apparently docker compose itself instead manages the lifecycle, so it's
+      # possible some data can be lost if it deletes it for some reason? See external
+      # in https://docs.docker.com/reference/compose-file/volumes/ for how to make
+      # docker compose not manage the volume.
+      - mysql-data:/var/lib/mysql
+    environment:
+      # This starts it with the root superuser having password "password"
+      MYSQL_ROOT_PASSWORD: password
+      
+      # correct way is to use an env_file, but we don't need to worry about this
+      # env_file:
+      #  - .env
+
+volumes:
+  mysql-data:

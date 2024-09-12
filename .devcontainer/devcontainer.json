@@ -1,0 +1,45 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+	"name": "Software Engineering C# and MySQL",
+	//
+	"dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	"customizations": {
+		"vscode": {
+		  "extensions": ["ms-vscode-remote.remote-containers", "ms-dotnettools.csdevkit"]
+		}
+	},
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	//
+	// 3306 is the default MYSQL port. However, we want to avoid conflicting with any MySQL
+	// servers we might have running on our local machine, so we instead forward 3000, which
+	// we setup in docker-compose.yml to have the MYSQL port. 
+	//
+	// I don't know if these ports are exposed to only your local machine, or are also available
+	// to other machines on the same network. As such, make sure not to have any sensitive data
+	// inside the database until that has been checked or made more secure. (Actually, just don't
+	// have any sensitive data in the database at all; there's no reason to, and we're taking
+	// security shortcuts for our local development environment elsewhere as well.)
+	"forwardPorts": [3000]
+	// "portsAttributes": {
+	//		"5001": {
+	//			"protocol": "https"
+	//		}
+	// }
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "dotnet restore",
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
